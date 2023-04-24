@@ -75,7 +75,7 @@ class EmailPaste {
 						return Boom.badRequest("Missing email contents!");
 					}
 
-					await this.sendEmail(newEmail.data.from.address, "AAABh7SKZygAAAAEaGFzdGU", {
+					await this.sendEmail(newEmail.data.from.address, config.get('emailengine.templateId'), {
 						haste_url: hasteURL,
 					}, newEmail.data.emailId);
 
