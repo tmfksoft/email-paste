@@ -75,6 +75,10 @@ class EmailPaste {
 						return Boom.badRequest("System Email - Skipping");
 					}
 
+					if (!newEmail.data.subject.match(/paste/gi)) {
+						return Boom.badRequest("Invalid Email - Must have 'paste' in the subject.");
+					}
+
 					let hasteId: string | undefined = undefined;
 
 					if (newEmail.data.text.plain) {
