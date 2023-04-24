@@ -65,6 +65,12 @@ class EmailPaste {
 					}
 
 					const newEmail = body as NewEmailEvent;
+
+					if (newEmail.data.subject.match(/undelivered/gi) || newEmail.data.subject.match(/undeliverable/gi)) {
+						console.log("Skipping system email from " + newEmail.data.from.address)
+						return Boom.badRequest("System Email - Skipping");
+					}
+
 					let hasteURL: string | undefined = undefined;
 
 					if (newEmail.data.text.plain) {
