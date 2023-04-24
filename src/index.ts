@@ -21,7 +21,7 @@ class EmailPaste {
 			throw new Error("Error creating paste!");
 		}
 		const res = req.data as HasteResponse;
-		return config.get('hastebin.server') + "/" + res.key;
+		return res.key;
 	}
 
 	async sendEmail(to: string, template: string, params: { [key: string]: string }, replyId: string,) {
@@ -71,21 +71,22 @@ class EmailPaste {
 						return Boom.badRequest("System Email - Skipping");
 					}
 
-					let hasteURL: string | undefined = undefined;
+					let hasteId: string | undefined = undefined;
 
 					if (newEmail.data.text.plain) {
-						hasteURL = await this.createPaste(newEmail.data.text.plain);
+						hasteId = await this.createPaste(newEmail.data.text.plain);
 					} else if (newEmail.data.text.html) {
-						hasteURL = await this.createPaste(newEmail.data.text.html);
+						hasteId = await this.createPaste(newEmail.data.text.html);
 					} else {
 						return Boom.badRequest("Missing email contents!");
 					}
 
 					await this.sendEmail(newEmail.data.from.address, config.get('emailengine.templateId'), {
-						haste_url: hasteURL,
+						haste_url: config.get('hastebin.server') + hasteId,
+						haste_id: hasteId,
 					}, newEmail.data.emailId);
 
-					return hasteURL || "ERR";
+					return hasteId || "ERR";
 				} catch (e) {
 					console.log(e);
 					return Boom.internal();
