@@ -24,20 +24,24 @@ class EmailPaste {
 		return res.key;
 	}
 
-	async sendEmail(to: string, template: string, params: { [key: string]: string }, replyId: string,) {
-		const req = await axios.post(`${config.get('emailengine.api')}/v1/account/${config.get('emailengine.accountId')}/submit`, {
+	async sendEmail(to: string, template: string, params: { [key: string]: string }, replyId?: string,) {
+		const payload: any = {
 			to: [
 				{ address: to },
 			],
-			// reference: {
-			// 	message: replyId,
-			// },
 			template,
 			trackingEnabled: true,
 			render: {
 				params
 			}
-		}, {
+		};
+
+		if (replyId) {
+			payload.reference = {
+				message: replyId,
+			};
+		}
+		const req = await axios.post(`${config.get('emailengine.api')}/v1/account/${config.get('emailengine.accountId')}/submit`, payload, {
 			headers: {
 				Authorization: `Bearer ${config.get('emailengine.key')}`
 			}
