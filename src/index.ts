@@ -92,10 +92,10 @@ class EmailPaste {
 					const rawHaste = await this.createPaste(JSON.stringify(newEmail, null, '\t'));
 
 					await this.sendEmail(newEmail.data.from.address, config.get('emailengine.templateId'), {
-						haste_url: config.get('hastebin.server') + hasteId,
+						haste_url: config.get('hastebin.server') + "/" + hasteId,
 						haste_id: hasteId,
 						raw_haste_id: rawHaste,
-						raw_haste_url: config.get('hastebin.server') + rawHaste
+						raw_haste_url: config.get('hastebin.server') + "/" + rawHaste
 					}, newEmail.data.emailId);
 
 					return hasteId || "ERR";
